@@ -1,0 +1,17 @@
+Oliver Goch
+
+In the top left corner is the branches and merges showing the general structure of the
+commits.
+
+In the top middle window is the author of the commit.
+
+In the top right window is the date of the commit.
+
+In the middle between the top and bottom windows is a sort of search directory containing
+the ID of the commit, the row, and two search bars, one to find commits, another to find 
+words or pharses in the commit.
+
+In the bottom left is a window that displays the commit along with options for diff, new
+version, and old version.
+
+In the bottom right is a window for comments, along with options for patch or tree.

@@ -1,0 +1,34 @@
+#!/bin/bash
+
+#export LC_ALL='C'
+currdir=$1 #get the current directory from the arguments
+IFS=$'\n' #this sets delimeter as new line so it recognizes files with spaces
+files=`ls -a $currdir | sort` #We need the -a to make sure to include files with a . in front
+declare -a regfiles #array to store normal files (those with read permissions and those that are symbolic links or directories)
+let filecount=0
+for FILE in $files
+do
+	if [ ! -r "$currdir/$FILE" ] #If the file has no read permissons
+	then
+		echo "You cannot read $currdir/$FILE"
+	fi
+	#make sure file is not a link, readable, and is a regular file
+	if [[ ! -L "$currdir/$FILE" && -r "$currdir/$FILE" && -f "$currdir/$FILE" ]]
+	then
+		regfiles[$filecount]="$currdir/$FILE"
+		let filecount=filecount+1
+	fi
+done
+
+for (( i=0; i<$filecount; i++ ))
+do
+	for (( j=$i+1; j<$filecount; j++ ))
+	do
+		compare=$(cmp -s -- "${regfiles[$i]}" "${regfiles[$j]}")
+		#the double dash allows us the script to ignore special characters
+		if [ ! $compare ] #if cmp returns 0, no difference
+		then
+			ln -f -- "${regfiles[$i]}" "${regfiles[$j]}"
+		fi
+	done
+done	

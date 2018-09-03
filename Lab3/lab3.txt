@@ -1,0 +1,111 @@
+Oliver Goch
+
+command
+-explanation
+
+wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz
+-This gets the file
+
+tar -xvf coreutils-7.6.tar.gz
+-This unzips the file
+
+mkdir CoreutilsInstall
+-This creates a directory to store the files
+
+./configure --prefix=/u/cs/ugrad/oliver/CoreutilsInstall
+-This starts install the file into CorreutilsInstall
+
+make
+-This compiles the installation
+
+make install
+-This installs the coreutils
+
+~/CoreutilsInstall/bin/ls -l
+-This reproduces the bug, by running the improper ls -l 
+while in the directory coreutils-7.6
+
+vi bradypatch
+-created the patch to fix the bug
+
+patch -p1 < bradypatch
+-this patches the bug. the -p1 flag makes sure it goes to the right file.
+The -p flag strips the number of slahes and words before slashes given
+in the source and destination files for the patch
+p0 strips none, while p4 deletes 4.
+In this case, the patch included a/src/ls and b/src/ls so we needed to get rid 
+of the a and b
+
+make
+-This made all of the files, and fixed the bug. For whatever reason on 
+linux server 07, I was repeatedly told I had no space on the device.
+So after switching to the ugrad server, the make command finally worked.
+make  all-recursive
+make[1]: Entering directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6'
+Making all in lib
+make[2]: Entering directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/lib'
+make  all-recursive
+make[3]: Entering directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/lib'
+make[4]: Entering directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/lib'
+make[4]: Leaving directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/lib'
+make[3]: Leaving directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/lib'
+make[2]: Leaving directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/lib'
+Making all in src
+make[2]: Entering directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/src'
+make  all-am
+make[3]: Entering directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/src'
+  CC     ls.o
+  CCLD   dir
+  CCLD   vdir
+  CCLD   ls
+make[3]: Leaving directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/src'
+make[2]: Leaving directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/src'
+Making all in doc
+make[2]: Entering directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/doc'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/doc'
+Making all in man
+make[2]: Entering directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/man'
+  GEN    dir.1
+  GEN    vdir.1
+  GEN    ls.1
+make[2]: Leaving directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/man'
+Making all in po
+make[2]: Entering directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/po'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/po'
+Making all in tests
+make[2]: Entering directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/tests'
+make[2]: *** No rule to make target `all'.  Stop.
+make[2]: Leaving directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6/tests'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/w/home.13/cs/ugrad/oliver/coreutils-7.6'
+make: *** [all] Error 2
+
+The make command modified the files changed by the patch file. 
+The only relevant makes are in src, which contains the ls command, which we
+wanted to fix. The rest of the make commands are fairly irrelevant
+
+
+src/ls -l
+-This was run in the coreutils-7.6 folder. 
+This ran the patched version of ls -l
+
+touch newfile.txt
+-This created a new file to compare the bugged and fixed versions of ls
+
+~/CoreutilsInstall/bin/ls -l newfile.txt
+-This ran the old, and still bugged version of ls
+
+src/ls -l newfile.txt
+-This ran the fixed version of ls that runs correctly
+
+touch -t 201504100959.30 oldfile.txt
+-This created an old file to test
+
+~/CoreutilsInstall/bin/ls -l oldfile.txt
+-This ran the old, and still bugged version of ls
+
+src/ls -l oldfile.txt
+-This ran the fixed version of ls that runs correctly
+

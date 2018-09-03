@@ -1,0 +1,72 @@
+Oliver Goch
+
+1. man -k prints all the commands that have a specific word in their man page
+
+2. I used the which command to discover where
+ each program is located in the system.
+cp is in /usr/bin/cp and wc is in /usr/bin/wc
+
+3. w - shows who is logged on and what they are doing
+: - no effect
+. - reads and executes commands from the filename provided in the current shell
+[ - evaluates a conditional expression
+
+4. The file /etc/alternatives/emacs is actually executed.
+I used the readlink command which I discovered using man -k
+
+5. g+s sets the group ID of the file to the group rather than the user
+o-x removes execution permission for other users 
+(users not in the file’s group)
+I used man chmod to discover this.
+
+6. The option that finds files modified within
+ the last three weeks is -mtime -21
+I found this using man find
+
+7. I used the command find -mtime -21 -type d to find the directories modified
+ in the last three weeks.
+I know this because I found it in man find.
+
+8. There are 246 files that are symbolic links in the same directory as find.
+I used the command find
+ /usr/bin -type l to do this and found that using man find.
+
+9. The oldest regular file in /usr/lib is 
+libgpg-error.so.0.10.0, last modified January 
+26, 2014.
+I found this out using man ls to discover than ls -lt was the proper command.
+-l lists the all the file information,
+ while -t sorts by modification time, newest first
+
+10. locale gets its data from localedef
+I determined this by looking at the man page for both commands
+
+11. I found the emacs commands that have sort in them by doing C-h a sort
+Buffer-menu-sort  
+sort-columns
+sort-fields 
+sort-lines 
+sort-numeric-fields
+sort-pages 
+sort-paragraphs
+sort-regexp-fields 
+tabulated-list-col-sort
+tabulated-list-sort
+
+12. C-M-a moves cursor to beginning of page
+C-M-b moves cursor back one symbolic expression
+C-M-c exits from the innermost recursive edit or minibuffer
+C-M-d moves down one level of parentheses
+C-M-e moves to end of current defun
+C-M-f move forward one symbolic expression
+C-M-g is undefined
+C-M-h puts a mark at the end of this defun and a point at the beginning
+The defun marked is the one that contains point or follows point
+
+13. C-g signals a 'quit' condition. During execution
+ of Lisp code, this character causes
+a quit directly
+
+14. yank reinserts the last stretch of killed text.
+
+15. emacs displays the current and parent directory 

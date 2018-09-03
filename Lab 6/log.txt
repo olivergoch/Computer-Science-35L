@@ -1,0 +1,47 @@
+Oliver Goch
+Lab 6
+
+$command
+-explanation
+
+$export PATH=/usr/local/cs/bin:$PATH
+-I did this so I would have the sort command that would accept the —-parallel argument
+
+$head -c 80 /dev/urandom | od -tf | tr -s ‘ ‘ ‘\n’ | sed ‘1~3d’
+-This was a test. It created random floating point numbers and put them all on newlines
+and deleted the random numbers between them
+
+$head -n 10000000 /dev/urandom | od -tf | tr -s ‘ ‘ ‘\n’ | sed ‘1~3d’ > realFP.txt
+-This created the file of 10,000,000 lines of floating point numbers
+
+$time -p sort -g realFP.txt > /dev/null
+-We timed the sort -g command on the large txt file and got the following:
+real 36.41
+user 198.49
+sys 1.24
+
+$time -p sort -g --parallel=1 realFP.txt > /dev/null
+-We timed the sort with one thread and got this:
+real 192.86
+user 191.93
+sys 0.92
+
+$time -p sort -g --parallel=2 realFP.txt > /dev/null
+-We timed the sort with two threads and got this:
+real 101.31
+user 193.07
+sys 0.64
+
+$time -p sort -g --parallel=4 realFP.txt > /dev/null
+-We time the sort with 4 threads and got this:
+real 58.99
+user 198.20
+sys 1.09
+
+$time -p sort -g --parallel=8 realFP.txt > /dev/null
+-We time the sort with 8 threads and got this:
+real 37.74
+user 200.32
+sys 1.04
+
+As we can see, the more threads that run in parallel the faster the sort is. The normal sort function seems to be running more than 8 threads because it is faster than the execution with 8 threads.

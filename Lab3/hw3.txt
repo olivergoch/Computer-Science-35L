@@ -1,0 +1,32 @@
+Oliver Goch
+
+1. The line was not necessary to remove, but it was cleaning up messy code.
+
+2. The difference in representation of the date between domestic and foreign 
+coders can be one difficulty. Another would be the lack of a timestamp in the 
+patched version.
+
+3. When we run randline on an empty file we get this error:
+Traceback (most recent call last):
+  File "./randline.py", line 49, in <module>
+    main()
+  File "./randline.py", line 43, in main
+    sys.stdout.write(generator.chooseline())
+  File "./randline.py", line 13, in chooseline
+    return random.choice(self.lines)
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/
+  python2.7/random.py", line 275, in choice
+    return seq[int(self.random() * len(seq))]  # raises IndexError if seq 
+    is empty
+IndexError: list index out of range
+
+This basically happens because the script searches for something, but nothing
+is there, so an indexing error happens.
+
+4. Running randline with Python3 gives us the error:
+File "randline.py", line 65
+    except IOError as (errno, strerror):
+                      ^
+SyntaxError: invalid syntax
+
+Because it is a tuple, and tuples were done away with in Python3.

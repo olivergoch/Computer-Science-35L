@@ -1,0 +1,68 @@
+Oliver Goch
+
+$cd diffutils-3.0
+-I moved into the unpatched diffutils folder
+
+$git checkout v3.0 -b quote
+-This checkouted the 3.0 version into a new branch named quote
+
+$cp ../diffutils/quote-3.0-patch.txt quote-3.0-patch.txt
+-I copied the patch file into current directory
+
+$patch -p1 < quote-3.0-patch.txt
+-I applied the patch to the current file
+
+$emacs
+-I entered the emacs editor
+
+C-x 4 a
+-I made a Changelog of all the files
+
+$git add .
+$git commit -F ChangeLog
+-I committed the changes and used the ChangeLog as the commit message
+
+$git format-patch -1 --stdout > formatted-patch.txt
+-I created the patch with the changes
+
+My partner for this project was David Macaraeg. I scped his patch from his server and 
+put it in mine, renaming it DavidPatch.txt
+
+$cp -r ~eggert/src/gnu/diffutils PartnerDiffutils
+-I made a new diffutils folder for the partner section
+
+$git checkout v3.0 -b partner
+-I switched to a new branch, naming it partner.
+
+$git am < DavidPatch.txt
+-I ran his patch on the file, correcting the grave apostrophe errors.
+
+$./bootstrap
+$./configure
+$make
+$make check
+-I ran all of this with my partner’s patch, and it all worked perfectly
+
+$./make distdir
+-This created the directory diffutils-3.0.1-2da3. I checked the ChangeLog within that file
+and it looked as expected. 
+
+I also worked with Benji Brandt, and his patch worked correctly as well, repeating all the
+previous steps
+
+$cp -r ~eggert/src/gnu/emacs egg
+-I tried copying these files into a folder called egg, but unfortunately many of them were 
+not able to be copied
+
+$git clone https://git.savannah.gnu.org/git/emacs.git egg
+-So I then cloned the repository into a folder called egg
+
+$gitk
+-This didn’t work
+
+$ssh -X oliver@lnxsrv09.seas.ucla.edu
+-I realized the gitk command didn’t work because I needed to ssh onto the linux with the 
+-X option, which would allow X11 forwarding
+
+$gitk
+-This command now worked and X11 started running on my computer

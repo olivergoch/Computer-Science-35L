@@ -1,0 +1,93 @@
+Oliver Goch
+
+command
+-explanation
+
+locale
+-Check locale, it is wrong, so change it
+
+export LC_ALL='C'
+-Change the locale to proper one
+
+sort /usr/share/dict/words > words
+-Sort and store words
+
+curl http://web.cs.ucla.edu/classes/winter16/cs35L/assign/assign2.html 
+> web.txt
+-Download and store website into web.txt
+
+tr -c 'A-Za-z' '[\n*]' < web.txt
+-the -c flag gets rid of any nonletter and replaces it with newlines
+
+
+tr -cs 'A-Za-z' '[\n*]' < web.txt
+-this is the same as the previous expect because of the -s flag, it is squeezed
+
+tr -cs 'A-Za-z' '[\n*]' < web.txt | sort
+-this is the same as the previous, except it sorts it
+
+tr -cs 'A-Za-z' '[\n*]' < web.txt | sort -u
+-this deletes all the duplicate words
+
+tr -cs 'A-Za-z' '[\n*]' < web.txt | sort -u | comm - words
+-this makes three columns, first is unique to web.txt, second is unique to
+words, third is what they have in common
+
+tr -cs 'A-Za-z' '[\n*]' < web.txt | sort -u | comm -23 - words
+-this is basically all the words that are misspelled, since they are not 
+in words
+
+wget http://mauimapp.com/moolelo/hwnwdseng.htm
+-this gets the words
+
+grep '<td>.\{1,\}<\/td>' |
+-this is the first line of buildwords, this grabs everything between the 
+td flags
+
+sed '1~2d' |
+-this deletes every other line, which is just the english words
+
+tr "A-Z\`" "a-z\'" |
+-this makes everything lower case
+
+sed 's/<td>//g;s/<\/td>//g;s/<u>//g;s/<\/u>//g' |
+-this gets rids of all the html flags
+
+sed "s/^\s*//g" |
+-this gets rid of all the newlines
+
+sed -E "s/,\s|\s/\n/g" |
+-replace commas and spaces with newlines
+
+grep "^[pk\' mnwlhaeiou]\{1,\}$" |
+-make sure only valid Hawaiian words are used
+
+sort -u
+-Sort everything, making sure to get rid of duplicates
+
+./buildwords < hwnwdseng.htm > hwords
+-run buildwords and put result in hwords
+
+tr 'PKMNWLHAEIOU' 'pkmnwlhaeiou' < assign2.html | tr -cs "pk\'mnwlhaeiou" 
+'[\n*]' | sort -u | comm -23 - hwords | wc -l
+-This gets the webpage, translates it into Hawaiian and checks all the words
+198 are mispelled
+
+tr -cs 'A-Za-z' '[\n*]' < assign2.html | sort -u | comm -23 - words | wc -l
+-This checks how many words are mispelled according to words, which is 81
+
+tr 'PKMNWLHAEIOU' 'pkmnwlhaeiou' < assign2.html | tr -cs "pk\'mnwlhaeiou" 
+'[\n*]' | sort -u | comm -23 - hwords > engwords.txt
+-This puts the result into a file, to be used later
+
+tr -cs 'A-Za-z' '[\n*]' < assign2.html | sort -u | comm -23 - words 
+> hawwords.txt
+-This puts the result into a file, to be used later
+
+comm -23 engwords.txt hawwords.txt | wc -l
+-This compares both results, getting the misspelled english words, which is 75
+A couple examples are cmp, eggert, and CTYPE
+
+comm -13 web2Eng.txt web2Haw.txt | wc -l 
+-This compares both results, getting the misspelled Hawaiian words, which is 192
+A couple examples are ollowin, linu, pellin

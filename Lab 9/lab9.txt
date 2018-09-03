@@ -1,0 +1,133 @@
+Oliver Goch
+
+$export PATH=/usr/local/cs/bin:$PATH
+-I made sure the path was correct so I could use git properly
+
+$cp -r ~eggert/src/gnu/diffutils .
+-I copied the required diffutils library to the current directory
+
+$cd diffutils
+-I changed the working directory to be diffutils
+
+$git log > git-log.txt
+-I got the log of changes and put it in the file git-log.txt
+
+$git tag > git-tags.txt
+-I got the list of tags and put it in the file git-tag.txt
+
+$vi git-log.txt
+-I found the number for the commit entitled maint: quote ‘like this’ or “like this”, not
+`like this’
+
+$git show 62ca21c8c1a5aa3488589dcb191a4ef04ae9ed4f > quote-patch.txt
+-I got the required git commit and put it in the file quote-patch.txt
+
+$git checkout v3.0
+-I used the checkout to to check out version 3.0 of Diffutils
+
+$patch -p1 < quote-patch.txt
+-I applied the patch to the version 3.0 of the system. I skipped past choosing which file
+to patch when necessary, and I ran into no problems. I was in the diffutils folder so that
+is why I used -p1
+
+$git status
+-I used git status to see all the changes, and which files were changed:
+# Changed but not updated:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   NEWS
+#	modified:   README
+#	modified:   TODO
+#	modified:   doc/diagmeet.note
+#	modified:   ms/config.bat
+#	modified:   ms/config.site
+#	modified:   po/en.po
+#	modified:   src/analyze.c
+#	modified:   src/cmp.c
+#	modified:   src/context.c
+#	modified:   src/diff.c
+#	modified:   src/diff.h
+#	modified:   src/diff3.c
+#	modified:   src/dir.c
+#	modified:   src/ifdef.c
+#	modified:   src/io.c
+#	modified:   src/sdiff.c
+#	modified:   src/side.c
+#	modified:   src/system.h
+#	modified:   src/util.c
+#	modified:   tests/help-version
+
+$emacs
+-I entered Emacs
+
+C-x C-f NEWS
+-I found the NEWS file, which is not a .c file
+
+C-x v =
+-I entered the *vc-diff* buffer for NEWS
+
+C-x v u
+-I reverted all the changes to NEWS, as per the spec.
+
+I will do the same thing to all not .c files
+
+Finished analyze.c & context.c
+
+Next I edited the .c files, undoing all changes to character string constants, also called
+comments, and leaving the changes to character strings.
+
+C-u C-c C-a
+-This unapplied a hunk of the patch
+
+Then I analyzed the *.c.rej files, of which there were 2, diff.c.rej, diff3.c.rej.
+
+M-s w
+-I saw that the line lines in the in .c.rej files did not always correlate to the lines
+in the .c files, so I used word search, and then I made the necessary edits.
+
+$git clean -f
+-This gets rid of all the untracked files
+
+$git status
+-This gives all the tracked files:
+# HEAD detached at v3.0
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   src/cmp.c
+#	modified:   src/diff.c
+#	modified:   src/diff3.c
+#	modified:   src/dir.c
+#	modified:   src/sdiff.c
+#	modified:   src/util.c
+#
+
+$git diff > quote-3.0-patch.txt
+-This created a patch with all the remaining differences
+
+I logged out and logged back in on the lnxsrv01 so I would not have to apply the patch
+$./bootstrap
+$./configure
+$./make
+$./make check
+-I ran the commands in README-hacking to fix the diff commmand
+
+$diff . -
+$diff —-help
+-These commands outputted the correct output
+
+$cp -r diffutils diffutils-3.0-patch
+$git clone ~eggert/src/gnu/diffutils diffutils-3.0
+-These created the directories of the patched and source files
+
+$diff -pru diffutils-3.0 diffutils-3.0-patch >quote-3.0-test.txt
+-This created the txt file with all the differences
+
+$diff quote-3.0-test.txt diffutils-3.0-patch/quote-3.0-patch.txt 
+-This outputted all the differences in the two txt files, which turned out to be 
+innoucous as they are the changes that were made to fix the bug.
+
+
+

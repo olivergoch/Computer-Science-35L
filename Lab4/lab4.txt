@@ -1,0 +1,103 @@
+Oliver Goch
+
+command
+-explanation
+
+wget http://web.cs.ucla.edu/classes/fall17/cs35L/assign/coreutils-with-bug.tar.gz
+-I used wget to download the tar file
+
+tar -xvzf coreutils-with-bug.tar.gz
+-I unzipped the file
+
+cd coreutils-with-bug
+-I changed the current directory to the coreutils-with-bug
+
+./configure
+-I configured the files
+
+make
+-I made the files, which gave me an error
+
+vi my_patch
+-I created a patch file with the text from the renaming patch file
+
+patch < my_patch
+-I applied my patch to the files
+
+make
+-I ran make again, this time, it was successful. The problem was due to the fact that
+in utimecmp.h, there was a conflicting types for futimens. The patch fixed this by 
+renaming certain files
+
+ tmp=$(mktemp -d)
+ cd $tmp
+ touch -d '1918-11-11 11:00 GMT' wwi-armistice
+ touch now
+ sleep 1
+ touch now1
+ TZ=UTC0 ~/coreutils-with-bug/src/ls -lt --full-time wwi-armistice now now1
+ -We run the commands and get the following as output:
+ 
+-rw-r--r-- 1 oliver csugrad 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+-rw-r--r-- 1 oliver csugrad 0 2017-01-25 00:11:55.528846902 +0000 now1
+-rw-r--r-- 1 oliver csugrad 0 2017-01-25 00:11:54.524820127 +0000 now
+
+-This is obviously wrong because it lists the file created last, first
+
+gdb ~/coreutils-with-bug/src/ls
+-We now enter the debugger, examining the broken ls function
+
+info functions
+-We call this to inspect the functions here and knowing that the error has something to 
+do with time, we see three interesting functions:
+static int compare_atime(V, V);
+static int compare_ctime(V, V);
+static int compare_mtime(V, V);
+
+break compare_atime
+break compare_ctime
+break compare_mtime
+-We set break points at all three functions
+
+r -lt
+-We now run the function with the breakpoints set. It encounters the first breakpoint
+in the function compare_mtime. The other two functions were never encountered
+
+stepi
+list
+-We step through the program and use list to see what's going on.
+We then see this function in the file timespec.h:
+
+46		timespec_cmp (struct timespec a, struct timespec b)
+47      {
+48        int diff = a.tv_sec - b.tv_sec;
+49        return diff ? diff : a.tv_nsec - b.tv_nsec;
+50      }
+
+This obviously is the fault as times that are from too long ago overflow and wrap around
+
+continue
+quit
+-We use continue to finish the execution and quit to exit gdb
+
+cd 
+rm -rf $tmp
+cp /coreutils-with-bug/lib/timespec.h timespec.h
+-We move out of the temporary directory, delete it, and copy timespec.h
+
+vi timespec.h
+-We edit timespec.h so it uses comparison operators instead of subtraction to check
+the age of files.
+
+emacs
+C-x 4 a
+-We create a changelog of the file
+
+diff -u /coreutils-with-bug/lib/timespec.h timespec.h > lab41.diff
+cat Changelog lab41.diff > lab4.diff
+vi lab4.diff
+-We create the the diff file and then concatenate the Changelog and the diff file.
+
+Creating the old file in my home directory and running ls on it caused it to appear
+as if it was created in 2054, most likely because it couldn't handle the massive
+difference in time.
